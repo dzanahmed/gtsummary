@@ -2,6 +2,82 @@
 
 ## gtsummary (development version)
 
+- Added a `levels` argument to
+  [`add_difference.tbl_summary()`](https://www.danieldsjoberg.com/gtsummary/dev/reference/add_difference.tbl_summary.md)
+  and
+  [`add_difference.tbl_svysummary()`](https://www.danieldsjoberg.com/gtsummary/dev/reference/add_difference.tbl_svysummary.md)
+  to select which two `by` groups to compare. This makes
+  [`add_difference()`](https://www.danieldsjoberg.com/gtsummary/dev/reference/add_difference.md)
+  usable when `by=` has more than two levels, and lets users flip the
+  direction of the difference for two-level `by` variables.
+  ([\#2151](https://github.com/ddsjoberg/gtsummary/issues/2151))
+
+- Fixed bug in
+  [`tbl_strata_nested_stack()`](https://www.danieldsjoberg.com/gtsummary/dev/reference/tbl_strata_nested_stack.md)
+  where second-level strata headers were dropped in all but the first
+  group when using three or more strata levels.
+  ([\#2418](https://github.com/ddsjoberg/gtsummary/issues/2418))
+
+- Added
+  [`save_flex_docx()`](https://www.danieldsjoberg.com/gtsummary/dev/reference/save_flex_docx.md)
+  to save a gtsummary table or a flextable to a Word (`.docx`) file via
+  flextable. The `header` and `footer` arguments place the table caption
+  in the Word document’s page header and the footnotes, source notes,
+  and abbreviations in the page footer. The `page` and `page_location`
+  arguments add a page-number line (e.g. `"Page {PAGE} of {NUMPAGES}"`)
+  to a chosen header/footer region and alignment. A collection of tables
+  is also accepted—a `tbl_split` object (from
+  [`tbl_split_by_rows()`](https://www.danieldsjoberg.com/gtsummary/dev/reference/tbl_split_by.md)/[`tbl_split_by_columns()`](https://www.danieldsjoberg.com/gtsummary/dev/reference/tbl_split_by.md))
+  or a plain list of flextables—writing each table to its own Word
+  section and page. For a flextable, its caption
+  ([`flextable::set_caption()`](https://davidgohel.github.io/flextable/reference/set_caption.html))
+  is relocated to the Word header and its footer part
+  ([`flextable::add_footer_lines()`](https://davidgohel.github.io/flextable/reference/add_footer_lines.html))
+  to the Word footer. The caption, footnotes, source notes,
+  abbreviations, and page-number line in the Word header/footer match
+  the table body font (family and size) instead of the Word template
+  default. Each Word region also inherits the styling applied to the
+  corresponding flextable part, so
+  e.g. `flextable::fontsize(size = 6, part = "footer")` yields a size-6
+  Word footer. The `pr_section` argument (and the
+  `save_flex_docx-lst:pr_section` theme element) accepts an
+  [`officer::prop_section()`](https://davidgohel.github.io/officer/reference/prop_section.html)
+  object for fine-grained control of the Word section—page margins, page
+  size, orientation, and columns—while the header/footer regions remain
+  managed by
+  [`save_flex_docx()`](https://www.danieldsjoberg.com/gtsummary/dev/reference/save_flex_docx.md);
+  for a collection the same section is applied to every table with the
+  paging `type` fixed to `"nextPage"`.
+
+- [`modify_abbreviation()`](https://www.danieldsjoberg.com/gtsummary/dev/reference/modify_abbreviation.md)
+  and
+  [`remove_abbreviation()`](https://www.danieldsjoberg.com/gtsummary/dev/reference/modify_abbreviation.md)
+  now accept a character vector of abbreviations, allowing multiple
+  abbreviations to be added or removed in a single call.
+  [`modify_abbreviation()`](https://www.danieldsjoberg.com/gtsummary/dev/reference/modify_abbreviation.md)
+  also gains `prefix`, `sep1`, and `sep2` arguments to customize the
+  abbreviation source note’s leading text (e.g. `c("Abbr.", "Abbrs.")`),
+  the separator between the prefix and the abbreviations (e.g. `": "`),
+  and the separator between abbreviations (e.g. `"; "`). Defaults are
+  also configurable via the `modify_abbreviation-arg:prefix`,
+  `modify_abbreviation-arg:sep1`, and `modify_abbreviation-arg:sep2`
+  theme elements.
+  ([\#2172](https://github.com/ddsjoberg/gtsummary/issues/2172))
+
+- The `missing` argument of
+  [`tbl_summary()`](https://www.danieldsjoberg.com/gtsummary/dev/reference/tbl_summary.md)
+  and
+  [`tbl_svysummary()`](https://www.danieldsjoberg.com/gtsummary/dev/reference/tbl_svysummary.md)
+  now accepts the formula-list-selector syntax
+  (e.g. `missing = list(age ~ "always", grade ~ "no")`), allowing the
+  missing row to be shown for some variables and not others. A bare
+  string (e.g. `missing = "no"`) remains supported.
+  ([\#2283](https://github.com/ddsjoberg/gtsummary/issues/2283))
+
+- Updated French language translations.
+  ([\#2341](https://github.com/ddsjoberg/gtsummary/issues/2341);
+  [@nalimilan](https://github.com/nalimilan))
+
 - Added Bosnian language translations.
   ([\#2341](https://github.com/ddsjoberg/gtsummary/issues/2341);
   [@dzanahmed](https://github.com/dzanahmed))
@@ -523,7 +599,7 @@ CRAN release: 2025-02-19
 - Adding the `tbl_merge(merge_vars)` argument. This argument allows
   users to specify any merging columns providing much more flexibility
   when merging unlike tables. Additionally, columns selected by
-  [`cards::all_ard_groups()`](https://insightsengineering.github.io/cards/latest-tag/reference/selectors.html)
+  [`cards::all_ard_groups()`](https://rdrr.io/pkg/cards/man/selectors.html)
   have been added to the default merging columns, which provides the
   functionality for merging the results from
   [`tbl_hierarchical()`](https://www.danieldsjoberg.com/gtsummary/dev/reference/tbl_hierarchical.md)
@@ -867,7 +943,7 @@ Updates to address regressions in the v2.0.0 release:
   available on the website).
 
 - The total N is now returned with `.$cards` using the
-  [`cards::ard_total_n()`](https://insightsengineering.github.io/cards/latest-tag/reference/ard_total_n.html)
+  [`cards::ard_total_n()`](https://rdrr.io/pkg/cards/man/ard_total_n.html)
   function for the calculation.
 
 - The default headers for `tbl_ard_*()` functions no longer include
@@ -886,7 +962,7 @@ Updates to address regressions in the v2.0.0 release:
 - The
   [`tbl_ard_wide_summary()`](https://www.danieldsjoberg.com/gtsummary/dev/reference/tbl_ard_wide_summary.md)
   function no longer requires the results from
-  [`cards::ard_attributes()`](https://insightsengineering.github.io/cards/latest-tag/reference/ard_attributes.html)
+  [`cards::ard_attributes()`](https://rdrr.io/pkg/cards/man/ard_attributes.html)
   to create tables.
   ([\#1873](https://github.com/ddsjoberg/gtsummary/issues/1873))
 
